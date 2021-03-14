@@ -32,9 +32,9 @@ mongoose
 server.listen(PORT, () => {
 	if (server.get("env") === "production") {
 		console.log("🚀 Server is running on CLOUD on PORT: ", PORT);
-        console.log(listEndpoints(server));
+        //console.log(listEndpoints(server));
 	} else {
 		console.log("🚀 Server is running LOCALLY on PORT: ", PORT);
-        console.log(listEndpoints(server));
+        //console.log(listEndpoints(server));
 	}
 });

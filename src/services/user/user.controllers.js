@@ -54,7 +54,6 @@ exports.editUserImage = async (req, res, next) => {
 
 exports.deleteUserProfile = async (req, res, next) => {
 	try {
-		console.log("🔴🔴🔴🔴🔴")
 		const user = req.user;
 		const deletedProfile = await UserModel.findByIdAndDelete(user._id);
 
