@@ -100,3 +100,19 @@ exports.getUserById = async (req, res, next) => {
 		next(error);
 	}
 };
+
+exports.spotifyAuthenticate = async (req, res, next) => {
+	try {
+		res.cookie("accessToken", req.user.tokens.accessToken, {
+			httpOnly: true,
+		  })
+		  res.cookie("refreshToken", req.user.tokens.refreshToken, {
+			httpOnly: true,
+			path: "/auth/refreshToken",
+		  })
+  
+	  res.status(200).redirect(process.env.FE_URL);
+	} catch (error) {
+	  next(error);
+	}
+  };
