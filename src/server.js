@@ -14,6 +14,7 @@ const httpServer = http.createServer(server);
 const listEndpoints = require("express-list-endpoints");
 //➡ Middlewares
 server.use(express.json());
+server.use(passport.initialize());
 server.use(cors(corsOptions));
 server.use(cookieParser());
 
@@ -37,6 +38,6 @@ server.listen(PORT, () => {
         //console.log(listEndpoints(server));
 	} else {
 		console.log("🚀 Server is running LOCALLY on PORT: ", PORT);
-        //console.log(listEndpoints(server));
+        console.log(listEndpoints(server));
 	}
 });

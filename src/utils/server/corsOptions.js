@@ -1,4 +1,4 @@
-const whitelist = [process.env.FE_URL];
+const whitelist = [process.env.FE_URL, process.env.CALLBACK_URL_SPOTIFY];
 const corsOptions = {
 	origin: (origin, callback) => {
 		if (whitelist.indexOf(origin) !== -1 || !origin) {

@@ -25,12 +25,12 @@ passport.use(
           const user = await UserModel.findOne({ spotifyId: profile.id });
   
           if (user) {
-            const tokens = await authenticate(user);
+            const tokens = await generateTokens(user);
             next(null, { user, tokens });
           } else {
             const createdUser = new UserModel(newUser);
             await createdUser.save();
-            const tokens = await authenticate(createdUser);
+            const tokens = await generateTokens(createdUser);
             next(null, { user: createdUser, tokens });
           }
         } catch (error) {
