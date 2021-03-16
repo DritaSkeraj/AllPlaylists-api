@@ -30,7 +30,7 @@ userRouter.get(
 );
 userRouter.get(
   "/googleRedirect",
-  passport.authenticate("google"),
+  passport.authenticate("google", { scope: [ "email", "profile" ] }),
   handleTokens
 );
 

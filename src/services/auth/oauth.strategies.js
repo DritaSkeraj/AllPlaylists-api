@@ -17,7 +17,7 @@ passport.use(
         console.log("spotify profile: ", profile);
         const newUser = {
           spotifyId: profile.id,
-          nickname: profile.display_name,
+          nickname: profile.displayName,
           email: profile.emails
         };
   
@@ -28,7 +28,7 @@ passport.use(
             const tokens = await generateTokens(user);
             next(null, { user, tokens });
           } else {
-            const createdUser = new UserModel(newUser);
+            const createdUser = new UserModel({...newUser, spotifyId: profile.id});
             await createdUser.save();
             const tokens = await generateTokens(createdUser);
             next(null, { user: createdUser, tokens });
@@ -52,9 +52,10 @@ passport.use(
         console.log("google Profile: ", profile)
         const newUser = {
           googleId: profile.id,
-          firstName: profile.name.givenName,
-          lastName: profile.name.familyName,
-          email: profile.emails[0].value
+          name: profile.name.givenName,
+          surname: profile.name.familyName,
+          email: profile.emails[0].value,
+          refreshTokens: []
         };
   
         try {

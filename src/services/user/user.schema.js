@@ -13,6 +13,8 @@ const UserSchema = new mongoose.Schema(
 			type: String,
 			default: userPlaceholderImg,
 		},
+		spotifyId: String,
+		googleId: String
 	},
 	{ timestamp: true }
 );
