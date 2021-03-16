@@ -34,6 +34,16 @@ userRouter.get(
   handleTokens
 );
 
+userRouter.get(
+  "/deezerLogin",
+  passport.authenticate("deezer", { scope: [ "email", "profile" ] })
+);
+userRouter.get(
+  "/deezerRedirect",
+  passport.authenticate("deezer" ),
+  handleTokens
+);
+
 userRouter.get("/me", validateToken, getUserProfile);
 userRouter.get("/", validateToken, getAllUsers);
 userRouter.get("/:userId", validateToken, getUserById);
