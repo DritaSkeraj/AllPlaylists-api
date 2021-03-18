@@ -5,6 +5,7 @@ const DeezerStrategy = require("passport-deezer").Strategy;
 const mongoose = require("mongoose");
 const UserModel = require("../user/user.schema");
 const {generateTokens} = require("../../utils/auth/jwt");
+const uniqid = require("uniqid");
 
 passport.use(
     "spotify",
@@ -34,7 +35,45 @@ passport.use(
             const tokens = await generateTokens(createdUser);
             next(null, { user: createdUser, tokens });
           }
-        } catch (error) {
+        } 
+        // try {
+        //   /*
+        //     1. find the user by id
+        //     2. check if that user has a spotify account
+        //     3. if not, update the user
+        //   */
+        //  //1
+        //   const id = "6053c787656e3c1848ea218f";
+        //   const user = await UserModel.findById(id)
+  
+        //   if (user) {
+        //     //2
+        //   if(user.spotifyAccount.hasOwnProperty("_id")){
+        //     console.log("user already has a spotify account registered");
+        //   } else {
+        //     //3
+        //     const updatedUser = await UserModel.findByIdAndUpdate(
+        //       id,
+        //       {
+        //         spotifyAccount: {...newUser, _id: uniqid()},
+        //       },
+        //       {
+        //         runValidators: true,
+        //         new: true,
+        //       }
+        //     );
+        //   }
+        //     //const tokens = await generateTokens(user);
+        //     next(null, { user }); //, tokens });
+        //     return updatedUser;
+        //   } else {
+        //     const createdUser = new UserModel({...newUser, spotifyId: profile.id});
+        //     await createdUser.save();
+        //     const tokens = await generateTokens(createdUser);
+        //     next(null, { user: createdUser, tokens });
+        //   }
+        // } 
+        catch (error) {
           next(error);
         }
       }
