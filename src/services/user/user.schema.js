@@ -16,9 +16,7 @@ const UserSchema = new mongoose.Schema(
 		spotifyId: String,
 		googleId: String,
 		deezerId: String,
-		spotifyAccount: {
-			refreshTokens: [{ token: String }]
-		},
+		spotifyAccount:Object,
 		googleAccount: {
 			refreshTokens: [{ token: String }]
 		},

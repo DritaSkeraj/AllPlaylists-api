@@ -14,4 +14,13 @@ const handleTokens = async (req, res, next) => {
 	}
 };
 
-module.exports = handleTokens;
+const redirect = async (req, res, next) => {
+	try{
+		res.redirect(process.env.FE_URL);
+	} catch(err){
+		console.log("Handle tokens error", error);
+		next(error);
+	}
+}
+
+module.exports = {handleTokens, redirect};

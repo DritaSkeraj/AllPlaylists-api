@@ -8,11 +8,11 @@ const generateTokens = async (user) => {
 		const newAccessToken = await generateJWT({ _id: user._id });
 		const newRefreshToken = await generateRefreshJWT({ _id: user._id });
 
-		user.refreshTokens = user.refreshTokens.concat({
-			token: newRefreshToken,
-		});
+		// user.refreshTokens = user.refreshTokens.concat({
+		// 	token: newRefreshToken,
+		// });
 
-		await user.save();
+		// await user.save();
 
 		return { token: newAccessToken, refreshToken: newRefreshToken };
 	} catch (error) {

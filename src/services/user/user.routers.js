@@ -1,7 +1,7 @@
 const userRouter = require("express").Router();
 const passport = require("passport");
 const cloudinaryMulter = require("../../middlewares/cloudinary");
-const handleTokens = require("../../middlewares/handleTokens");
+const {handleTokens, redirect} = require("../../middlewares/handleTokens");
 
 const { validateToken } = require("../../middlewares/validateToken");
 const {
@@ -16,12 +16,20 @@ const {
 
 userRouter.get(
   "/spotifyLogin",
-  passport.authenticate("spotify", { scope: ["profile", "email"] })
+
+   (req,res,next)=>{
+    
+    passport.authenticate("spotify",{state:req.query.state})(req,res,next)
+  }
 );
 userRouter.get(
   "/spotifyRedirect",
-  passport.authenticate("spotify"),
-  handleTokens
+  (req,res,next)=>{
+   
+   passport.authenticate("spotify")(req,res,next)
+ },
+  redirect
+  //handleTokens
 );
 
 userRouter.get(
