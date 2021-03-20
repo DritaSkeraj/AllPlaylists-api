@@ -46,8 +46,8 @@ passport.use(
     },
     async (request, accessToken, refreshToken, profile, next) => {
       //console.log("spotify profile: ", profile);
-        const decoded = Buffer.from(request.query.state,"base64").toString()
-       const [key,value] =decoded.split("=")
+       const decoded = Buffer.from(request.query.state,"base64").toString()
+       const [key,value] = decoded.split("=")
        console.log(value)
        const {_id} = await verifyJWT(value)
        console.log(_id)
@@ -66,64 +66,6 @@ passport.use(
       } catch (error) {
         next(error, null);
       }
-
-      // try {
-      //   /*
-      //     1. find the user by id
-      //     2. check if that user has a spotify account
-      //     3. if not, update the user
-      //   */
-      //  //1
-      //   const currentUser = await getCurrentUser();
-      //   const id = "6053d9f56ad3e8478c03b6cc";
-      //   const user = await UserModel.findById(id)
-      //   console.log("👩‍💻 user: ", user);
-
-      //   if (user) {
-      //     //2
-      //   if(user.spotifyAccount.hasOwnProperty("_id")){
-      //     console.log("user already has a spotify account registered");
-      //   } else {
-      //     //3
-      //     try{
-      //     console.log("user doesnt have a spotify account registered. trying to add it. The new user is: ", newUser)
-      //     let userToAdd = {
-      //       ...user.spotifyAccount,
-      //       ...newUser,
-      //       "name": "bond. james bond"
-      //     }
-      //     console.log("➕user to add: ", userToAdd)
-      //     const updatedUser = await UserModel.findByIdAndUpdate(
-      //       id,
-      //       {
-      //         $set: {spotifyAccount: userToAdd},
-      //       }
-      //       // ,{
-      //       //   runValidators: true,
-      //       //   new: true,
-      //       // }
-      //     );
-      //     //const tokens = await generateTokens(user);
-      //     next(null, { user }); //, tokens });
-      //     console.log("updatedUser: ", updatedUser)
-      //     console.log("new user", {...newUser})
-      //     return updatedUser;
-      //     } catch(err){
-      //       console.log("some error: ", err);
-      //       next(err)
-      //     }
-      //   }
-      //   } else {
-      //     console.log("no such user with jwt account")
-      //     // const createdUser = new UserModel({...newUser, spotifyId: profile.id});
-      //     // await createdUser.save();
-      //     // const tokens = await generateTokens(createdUser);
-      //     // next(null, { user: createdUser, tokens });
-      //   }
-      // }
-      // catch (error) {
-      //   next(error);
-      // }
     }
   )
 );
@@ -135,32 +77,60 @@ passport.use(
       clientID: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
       callbackURL: process.env.CALLBACK_URL_GOOGLE,
+      passReqToCallback:true,
     },
     async (request, accessToken, refreshToken, profile, next) => {
-      console.log("google Profile: ", profile);
-      const newUser = {
-        googleId: profile.id,
-        name: profile.name.givenName,
-        surname: profile.name.familyName,
-        email: profile.emails[0].value,
-        refreshTokens: [],
-      };
-
       try {
-        const user = await UserModel.findOne({ googleId: profile.id });
-        console.log(user);
+      const decoded = Buffer.from(request.query.state,"base64").toString()
+       const [key,value] = decoded.split("=")
+       console.log("value: ", value)
+       const {_id} = await verifyJWT(value)
+       console.log("_id: ", _id)
+       console.log("google profile: ", profile)
+        let user = await UserModel.findById(_id);
+
         if (user) {
-          const tokens = await generateTokens(user);
-          next(null, { user, tokens });
+          //console.log("main user acc: ", user)
+           //await user.update({googleAccount:profile})
+           try{
+           await UserModel.findByIdAndUpdate(_id, {googleAccount: profile})
+           } catch(err){
+            const error = new Error("couldn't update user")
+            next(error, null);
+           }
+          next(null, { user });
         } else {
-          const createdUser = new UserModel(newUser);
-          await createdUser.save();
-          const tokens = await generateTokens(createdUser);
-          next(null, { user: createdUser, tokens });
+          console.log("no user")
+           const error = new Error("This account not exist")
+           next(error, null);
         }
       } catch (error) {
-        next(error);
+        next(error, null);
       }
+      // console.log("google Profile: ", profile);
+      // const newUser = {
+      //   googleId: profile.id,
+      //   name: profile.name.givenName,
+      //   surname: profile.name.familyName,
+      //   email: profile.emails[0].value,
+      //   refreshTokens: [],
+      // };
+
+      // try {
+      //   const user = await UserModel.findOne({ googleId: profile.id });
+      //   console.log(user);
+      //   if (user) {
+      //     const tokens = await generateTokens(user);
+      //     next(null, { user, tokens });
+      //   } else {
+      //     const createdUser = new UserModel(newUser);
+      //     await createdUser.save();
+      //     const tokens = await generateTokens(createdUser);
+      //     next(null, { user: createdUser, tokens });
+      //   }
+      // } catch (error) {
+      //   next(error);
+      // }
     }
   )
 );

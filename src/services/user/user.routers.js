@@ -17,15 +17,13 @@ const {
 userRouter.get(
   "/spotifyLogin",
 
-   (req,res,next)=>{
-    
+   (req,res,next)=>{    
     passport.authenticate("spotify",{state:req.query.state})(req,res,next)
   }
 );
 userRouter.get(
   "/spotifyRedirect",
   (req,res,next)=>{
-   
    passport.authenticate("spotify")(req,res,next)
  },
   redirect
@@ -34,12 +32,18 @@ userRouter.get(
 
 userRouter.get(
   "/googleLogin",
-  passport.authenticate("google", { scope: [ "email", "profile" ] })
+  (req, res, next)=>{
+  passport.authenticate("google", { state:req.query.state })(req, res, next)
+}
 );
 userRouter.get(
   "/googleRedirect",
-  passport.authenticate("google", { scope: [ "email", "profile" ] }),
-  handleTokens
+  (req,res,next)=>{
+    passport.authenticate("google", { state:req.query.state , scope: [ "email", "profile" ] })(req,res,next)
+  },
+  //passport.authenticate("google", { scope: [ "email", "profile" ] }),
+  redirect
+  //handleTokens
 );
 
 userRouter.get(
