@@ -13,6 +13,15 @@ const UserSchema = new mongoose.Schema(
 			type: String,
 			default: userPlaceholderImg,
 		},
+		spotifyId: String,
+		googleId: String,
+		deezerId: String,
+		spotifyAccount:Object,
+		googleAccount:Object,
+		deezerAccount:Object,
+		soundcloudAccount: {
+			refreshTokens: [{ token: String }]
+		}
 	},
 	{ timestamp: true }
 );
