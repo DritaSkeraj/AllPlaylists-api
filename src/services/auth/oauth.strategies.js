@@ -142,32 +142,54 @@ passport.use(
       clientID: process.env.DEEZER_ID,
       clientSecret: process.env.DEEZER_SECRET,
       callbackURL: process.env.CALLBACK_URL_DEEZER,
+      passReqToCallback: true
     },
     async (request, accessToken, refreshToken, profile, next) => {
-      console.log("deezer Profile: ", profile);
-      const newUser = {
-        deezerId: profile.id,
-        name: profile.name,
-        //surname: profile.name.split(" ")[1],
-        picture: profile.picture,
-        refreshTokens: [],
-      };
-
+      const decoded = Buffer.from(request.query.state,"base64").toString()
+       const [key,value] = decoded.split("=")
+       console.log("token: ", value)
+       const {_id} = await verifyJWT(value)
+       console.log("_id: ", _id)
+       console.log("deezer profile: ", profile)
       try {
-        const user = await UserModel.findOne({ deezerId: profile.id });
-        console.log(user);
+        let user = await UserModel.findById(_id);
+
         if (user) {
-          const tokens = await generateTokens(user);
-          next(null, { user, tokens });
+          console.log(user)
+           await user.update({deezerAccount:profile})
+          next(null, { user });
         } else {
-          const createdUser = new UserModel(newUser);
-          await createdUser.save();
-          const tokens = await generateTokens(createdUser);
-          next(null, { user: createdUser, tokens });
+          console.log("no user")
+           const error = new Error("This account does not exist")
+           next(error, null);
         }
       } catch (error) {
-        next(error);
+        next(error, null);
       }
+      // console.log("deezer Profile: ", profile);
+      // const newUser = {
+      //   deezerId: profile.id,
+      //   name: profile.name,
+      //   //surname: profile.name.split(" ")[1],
+      //   picture: profile.picture,
+      //   refreshTokens: [],
+      // };
+
+      // try {
+      //   const user = await UserModel.findOne({ deezerId: profile.id });
+      //   console.log(user);
+      //   if (user) {
+      //     const tokens = await generateTokens(user);
+      //     next(null, { user, tokens });
+      //   } else {
+      //     const createdUser = new UserModel(newUser);
+      //     await createdUser.save();
+      //     const tokens = await generateTokens(createdUser);
+      //     next(null, { user: createdUser, tokens });
+      //   }
+      // } catch (error) {
+      //   next(error);
+      // }
     }
   )
 );

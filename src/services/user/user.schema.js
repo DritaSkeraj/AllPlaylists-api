@@ -17,10 +17,8 @@ const UserSchema = new mongoose.Schema(
 		googleId: String,
 		deezerId: String,
 		spotifyAccount:Object,
-		googleAccount: Object,
-		deezerAccount: {
-			refreshTokens: [{ token: String }]
-		},
+		googleAccount:Object,
+		deezerAccount:Object,
 		soundcloudAccount: {
 			refreshTokens: [{ token: String }]
 		}

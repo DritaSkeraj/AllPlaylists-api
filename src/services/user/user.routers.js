@@ -48,12 +48,17 @@ userRouter.get(
 
 userRouter.get(
   "/deezerLogin",
-  passport.authenticate("deezer", { scope: [ "email", "profile" ] })
-);
+  (req, res, next) => {
+  passport.authenticate("deezer", { state: req.query.state })(req, res, next)
+});
+
 userRouter.get(
   "/deezerRedirect",
-  passport.authenticate("deezer" ),
-  handleTokens
+  (req, res, next) => {
+  passport.authenticate("deezer", {state: req.query.state })(req, res, next)
+},
+  redirect
+  //handleTokens
 );
 
 userRouter.get("/me", validateToken, getUserProfile);
