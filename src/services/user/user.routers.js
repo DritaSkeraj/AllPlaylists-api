@@ -18,13 +18,45 @@ userRouter.get(
   "/spotifyLogin",
 
    (req,res,next)=>{    
-    passport.authenticate("spotify",{state:req.query.state})(req,res,next)
+    passport.authenticate("spotify",{state:req.query.state, scope: [
+      "user-read-email",
+      "user-read-private",
+      "user-read-playback-state",
+      "streaming",
+      "user-modify-playback-state",
+      "playlist-modify-public",
+      "user-library-modify",
+      "user-top-read",
+      "playlist-read-collaborative",
+      "user-read-currently-playing",
+      "playlist-read-private",
+      "user-follow-read",
+      "user-read-recently-played",
+      "playlist-modify-private",
+      "user-library-read"
+    ], showDialog: true})(req,res,next)
   }
 );
 userRouter.get(
   "/spotifyRedirect",
   (req,res,next)=>{
-   passport.authenticate("spotify")(req,res,next)
+   passport.authenticate("spotify", {scope: [
+    "user-read-email",
+    "user-read-private",
+    "user-read-playback-state",
+    "streaming",
+    "user-modify-playback-state",
+    "playlist-modify-public",
+    "user-library-modify",
+    "user-top-read",
+    "playlist-read-collaborative",
+    "user-read-currently-playing",
+    "playlist-read-private",
+    "user-follow-read",
+    "user-read-recently-played",
+    "playlist-modify-private",
+    "user-library-read"
+  ], showDialog: true})(req,res,next)
  },
   redirect
   //handleTokens
