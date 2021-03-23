@@ -43,6 +43,23 @@ getYoutubePlaylists = async (accessToken) => {
   }
 };
 
+getDeezerPlaylists = async (accessToken) => {
+  try {
+    const me = await axios.get(`https://api.deezer.com/user/me`, {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    })
+    console.log("👩‍💻👩‍💻👩‍💻👩‍💻::: ", me);
+    return await axios.get(
+      `https://api.deezer.com/user/4263427462/playlists`
+      , {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+  } catch (err) {
+    console.log("error getting dz playlists: ", err);
+  }
+};
+
 // getPlaylistTracks = async(playlistUri, accessToken) => {
 //   try{
 //     return await axios.get(`https://api.spotify.com/v1/playlists/${playlistUri}/tracks`, {
@@ -153,6 +170,13 @@ passport.use(
       passReqToCallback: true,
     },
     async (request, accessToken, refreshToken, profile, next) => {
+      //get deezer playlists
+      console.log("deezer accessToken: ", accessToken)
+      let playlists = await getDeezerPlaylists(accessToken);
+      const dzPlaylists = playlists.data;
+      console.log('deezer playlists: ', dzPlaylists)
+
+      //get user from fe
       const decoded = Buffer.from(request.query.state, "base64").toString();
       const [key, value] = decoded.split("=");
       //console.log("token: ", value)
@@ -164,7 +188,7 @@ passport.use(
 
         if (user) {
           //console.log(user)
-          await user.update({ deezerAccount: profile });
+          await user.update({ deezerAccount: {profile, dzPlaylists} });
           next(null, { user });
         } else {
           //console.log("no user")

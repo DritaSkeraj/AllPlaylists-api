@@ -105,13 +105,21 @@ userRouter.get(
 );
 
 userRouter.get("/deezerLogin", (req, res, next) => {
-  passport.authenticate("deezer", { state: req.query.state })(req, res, next);
+  passport.authenticate("deezer", { state: req.query.state, scope: [
+    "basic_access",
+    "email",
+    "manage_library"
+  ] })(req, res, next);
 });
 
 userRouter.get(
   "/deezerRedirect",
   (req, res, next) => {
-    passport.authenticate("deezer", { state: req.query.state })(req, res, next);
+    passport.authenticate("deezer", { state: req.query.state, scope: [
+      "basic_access",
+      "email",
+      "manage_library"
+    ] })(req, res, next);
   },
   redirect
   //handleTokens
