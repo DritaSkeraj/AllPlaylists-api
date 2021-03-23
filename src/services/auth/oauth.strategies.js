@@ -9,14 +9,6 @@ const axios = require("axios");
 const uniqid = require("uniqid");
 const jwt = require("jsonwebtoken");
 
-/**
- * 
-     User clicks signup w spotify
-
-     USer clicks signin w spotify
-
- */
-
 getSpotifyPlaylists = async (accessToken) => {
   try {
     return await axios.get("https://api.spotify.com/v1/me/playlists", {
@@ -30,11 +22,8 @@ getSpotifyPlaylists = async (accessToken) => {
 getYoutubePlaylists = async (accessToken) => {
   try {
     return await axios.get(
-      `https://youtube.googleapis.com/youtube/v3/playlists?part=snippet%2CcontentDetails&maxResults=25&mine=true&key=process.env.GOOGLE_ID`
-      // `https://developers.google.com/apis-explorer/#p/youtube/v3/youtube.playlists.list?
-      // part=snippet,contentDetails
-      // &mine=true`
-      , {
+      `https://youtube.googleapis.com/youtube/v3/playlists?part=snippet%2CcontentDetails&maxResults=25&mine=true&key=process.env.GOOGLE_ID`,
+      {
         headers: { Authorization: `Bearer ${accessToken}` },
       }
     );
@@ -46,15 +35,12 @@ getYoutubePlaylists = async (accessToken) => {
 getDeezerPlaylists = async (accessToken) => {
   try {
     const me = await axios.get(`https://api.deezer.com/user/me`, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    })
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
     console.log("👩‍💻👩‍💻👩‍💻👩‍💻::: ", me);
-    return await axios.get(
-      `https://api.deezer.com/user/4263427462/playlists`
-      , {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      }
-    );
+    return await axios.get(`https://api.deezer.com/user/4263427462/playlists`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
   } catch (err) {
     console.log("error getting dz playlists: ", err);
   }
@@ -80,6 +66,7 @@ passport.use(
       passReqToCallback: true,
     },
     async (request, accessToken, refreshToken, profile, next) => {
+
       // getting playlists from spotify account
       console.log("accessToken: ", accessToken, "refreshToken: ", refreshToken);
       const mySpotifyPlaylists = await getSpotifyPlaylists(accessToken);
@@ -119,37 +106,29 @@ passport.use(
     },
     async (request, accessToken, refreshToken, profile, next) => {
       try {
+        console.log("yt accessToken: ", accessToken, "yt refreshToken: ", refreshToken);
+
         // getting playlists from yt account
-        console.log(
-          "yt accessToken: ",
-          accessToken,
-          "yt refreshToken: ",
-          refreshToken
-        );
         const myYoutubePlaylists = await getYoutubePlaylists(accessToken);
         const ytPlaylists = myYoutubePlaylists.data;
         console.log("youtube playlists: ", ytPlaylists);
 
         const decoded = Buffer.from(request.query.state, "base64").toString();
         const [key, value] = decoded.split("=");
-        //console.log("value: ", value)
         const { _id } = await verifyJWT(value);
-        //console.log("_id: ", _id)
-        //console.log("google profile: ", profile)
-        let user = await UserModel.findById(_id);
 
+        let user = await UserModel.findById(_id);
         if (user) {
-          //console.log("main user acc: ", user)
-          //await user.update({googleAccount:profile})
           try {
-            await UserModel.findByIdAndUpdate(_id, { googleAccount: {profile, ytPlaylists}});
+            await UserModel.findByIdAndUpdate(_id, {
+              googleAccount: { profile, ytPlaylists },
+            });
           } catch (err) {
             const error = new Error("couldn't update user");
             next(error, null);
           }
           next(null, { user });
         } else {
-          //console.log("no user")
           const error = new Error("This account not exist");
           next(error, null);
         }
@@ -170,28 +149,24 @@ passport.use(
       passReqToCallback: true,
     },
     async (request, accessToken, refreshToken, profile, next) => {
+
       //get deezer playlists
-      console.log("deezer accessToken: ", accessToken)
+      console.log("deezer accessToken: ", accessToken);
       let playlists = await getDeezerPlaylists(accessToken);
       const dzPlaylists = playlists.data;
-      console.log('deezer playlists: ', dzPlaylists)
+      console.log("deezer playlists: ", dzPlaylists);
 
       //get user from fe
       const decoded = Buffer.from(request.query.state, "base64").toString();
       const [key, value] = decoded.split("=");
-      //console.log("token: ", value)
       const { _id } = await verifyJWT(value);
-      //console.log("_id: ", _id)
-      //console.log("deezer profile: ", profile)
+
       try {
         let user = await UserModel.findById(_id);
-
         if (user) {
-          //console.log(user)
-          await user.update({ deezerAccount: {profile, dzPlaylists} });
+          await user.update({ deezerAccount: { profile, dzPlaylists } });
           next(null, { user });
         } else {
-          //console.log("no user")
           const error = new Error("This account does not exist");
           next(error, null);
         }
