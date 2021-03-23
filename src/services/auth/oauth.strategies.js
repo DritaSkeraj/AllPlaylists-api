@@ -23,7 +23,23 @@ getSpotifyPlaylists = async (accessToken) => {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
   } catch (err) {
-    console.log("error getting playlists: ", err);
+    console.log("error getting spotify playlists: ", err);
+  }
+};
+
+getYoutubePlaylists = async (accessToken) => {
+  try {
+    return await axios.get(
+      `https://youtube.googleapis.com/youtube/v3/playlists?part=snippet%2CcontentDetails&maxResults=25&mine=true&key=process.env.GOOGLE_ID`
+      // `https://developers.google.com/apis-explorer/#p/youtube/v3/youtube.playlists.list?
+      // part=snippet,contentDetails
+      // &mine=true`
+      , {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+  } catch (err) {
+    console.log("error getting yt playlists: ", err);
   }
 };
 
@@ -86,6 +102,17 @@ passport.use(
     },
     async (request, accessToken, refreshToken, profile, next) => {
       try {
+        // getting playlists from yt account
+        console.log(
+          "yt accessToken: ",
+          accessToken,
+          "yt refreshToken: ",
+          refreshToken
+        );
+        const myYoutubePlaylists = await getYoutubePlaylists(accessToken);
+        const ytPlaylists = myYoutubePlaylists.data;
+        console.log("youtube playlists: ", ytPlaylists);
+
         const decoded = Buffer.from(request.query.state, "base64").toString();
         const [key, value] = decoded.split("=");
         //console.log("value: ", value)
@@ -98,7 +125,7 @@ passport.use(
           //console.log("main user acc: ", user)
           //await user.update({googleAccount:profile})
           try {
-            await UserModel.findByIdAndUpdate(_id, { googleAccount: profile });
+            await UserModel.findByIdAndUpdate(_id, { googleAccount: {profile, ytPlaylists}});
           } catch (err) {
             const error = new Error("couldn't update user");
             next(error, null);
