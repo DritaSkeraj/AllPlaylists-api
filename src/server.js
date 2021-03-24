@@ -38,6 +38,6 @@ server.listen(PORT, () => {
         //console.log(listEndpoints(server));
 	} else {
 		console.log("🚀 Server is running LOCALLY on PORT: ", PORT);
-        console.log(listEndpoints(server));
+        //console.log(listEndpoints(server));
 	}
 });
