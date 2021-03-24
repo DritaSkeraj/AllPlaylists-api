@@ -34,11 +34,12 @@ getYoutubePlaylists = async (accessToken) => {
 
 getDeezerPlaylists = async (accessToken) => {
   try {
-    const me = await axios.get(`https://api.deezer.com/user/me`, {
+    const me = await axios.get(`https://api.deezer.com/user/me?output=jsonp&output=jsonp&access_token=${accessToken}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    console.log("👩‍💻👩‍💻👩‍💻👩‍💻::: ", me);
-    return await axios.get(`https://api.deezer.com/user/4263427462/playlists`, {
+    const myId = me.data.split(":")[1].split(",")[0];
+    console.log("👩‍💻👩‍💻👩‍💻👩‍💻::: ", myId);
+    return await axios.get(`https://api.deezer.com/user/${myId}/playlists`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
   } catch (err) {
