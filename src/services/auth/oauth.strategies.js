@@ -83,7 +83,7 @@ passport.use(
         let user = await UserModel.findById(_id);
 
         if (user) {
-          await user.update({ spotifyAccount: { profile, sPlaylists } });
+          await user.update({ spotifyAccount: { profile, sPlaylists, "at": accessToken } });
           next(null, { user });
         } else {
           const error = new Error("This account not exist");
@@ -122,7 +122,7 @@ passport.use(
         if (user) {
           try {
             await UserModel.findByIdAndUpdate(_id, {
-              googleAccount: { profile, ytPlaylists },
+              googleAccount: { profile, ytPlaylists, "at": accessToken },
             });
           } catch (err) {
             const error = new Error("couldn't update user");
