@@ -48,7 +48,7 @@ const handleRefreshToken = async (oldRefreshToken) => {
 
 const generateJWT = (payload) =>
 	new Promise((res, rej) => {
-		jwt.sign(payload, JWT_SECRET, { expiresIn: "15m" }, (err, token) => {
+		jwt.sign(payload, JWT_SECRET, { expiresIn: "1 week" }, (err, token) => {
 			if (err) rej(err);
 			res(token);
 		});
