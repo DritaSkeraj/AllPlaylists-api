@@ -39,9 +39,11 @@ exports.login = async (req, res, next) => {
 	try {
 		const { username, password } = req.body;
 		const user = await UserModel.findByCredentials(username, password);
-		if (!user) return next(new ApiError(400, "Invalid Credentials"));
+		if (!user) {
+			return next(new ApiError(400, "Invalid Credentials"));
+		} else{
 		const tokens = await generateTokens(user);
-
+		
 		res.cookie("token", tokens.token, { httpOnly: true });
 		res.cookie("refreshToken", tokens.refreshToken, {
 			httpOnly: true,
@@ -49,6 +51,7 @@ exports.login = async (req, res, next) => {
 		});
 		res.cookie("isAuthUser", true);
 		res.status(200).send(tokens);
+		}
 	} catch (error) {
 		console.log("Login error: ", error);
 		next(error);
