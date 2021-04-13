@@ -46,7 +46,7 @@ exports.login = async (req, res, next) => {
 		const tokens = await generateTokens(user);
 		
 		res.cookie("token", tokens.token, {
-			path:'/main',
+			path:'/',
 			 httpOnly: true,
   			
 			secure:true,
