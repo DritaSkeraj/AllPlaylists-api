@@ -45,13 +45,14 @@ exports.login = async (req, res, next) => {
 		const tokens = await generateTokens(user);
 		
 		res.cookie("token", tokens.token, {
+			path:'/',
 			 httpOnly: true,
   			
 			secure:true,
 			sameSite:"none" });
 		res.cookie("refreshToken", tokens.refreshToken, {
+			path:'/',
 			httpOnly: true,
-			path: "/api/auth/refreshToken",
 			secure:true,
 			sameSite:"none"
 		});
