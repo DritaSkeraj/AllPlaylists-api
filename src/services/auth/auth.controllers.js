@@ -11,8 +11,8 @@ exports.refreshTokenHandler = async (req, res, next) => {
 			throw new ApiError(400, "Refresh token is missing");
 		const newTokens = await handleRefreshToken(oldRefreshToken);
 
-		res.cookie("token", newTokens.token);
-		res.cookie("refreshToken", newTokens.refreshToken);
+		res.cookie("token", newTokens.token, { httpOnly: true, secure:true, sameSite:'none' });
+		res.cookie("refreshToken", newTokens.refreshToken, { httpOnly: true, secure:true, sameSite:'none' });
 		res.send("OK");
 	} catch (error) {
 		console.log("Refresh token error", error);
@@ -26,7 +26,7 @@ exports.logout = async (req, res, next) => {
 		await req.user.save();
 		res.clearCookie("token");
 		res.clearCookie("refreshToken");
-		res.cookie("isAuthUser", false);
+		res.cookie("isAuthUser", false, { httpOnly: true, secure:true, sameSite:'none' });
 		// res.redirect(process.env.REDIRECT_LOGIN_URL);
 		res.send("OK");
 	} catch (error) {
