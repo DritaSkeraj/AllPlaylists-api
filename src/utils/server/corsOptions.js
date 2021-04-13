@@ -1,4 +1,4 @@
-const whitelist = ['https://all-playlists-fe.herokuapp.com/', process.env.CALLBACK_URL_SPOTIFY, process.env.CALLBACK_URL_DEEZER];
+const whitelist = ['https://all-playlists-fe.herokuapp.com', process.env.CALLBACK_URL_SPOTIFY, process.env.CALLBACK_URL_DEEZER];
 const corsOptions = {
 	origin: (origin, callback) => {
 		if (whitelist.indexOf(origin) !== -1 || !origin) {
