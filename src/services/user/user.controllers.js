@@ -106,13 +106,13 @@ exports.spotifyAuthenticate = async (req, res, next) => {
 		res.cookie("accessToken", req.user.tokens.accessToken, {
 			httpOnly: true,
 			secure:true,
-			sameSite:'none'
+			sameSite:true
 		  })
 		  res.cookie("refreshToken", req.user.tokens.refreshToken, {
 			httpOnly: true,
 			path: "/auth/refreshToken",
 			secure:true,
-			sameSite:'none'
+			sameSite:true
 		  })
   
 	  res.status(200).redirect(process.env.FE_URL);

@@ -44,10 +44,16 @@ exports.login = async (req, res, next) => {
 		} else{
 		const tokens = await generateTokens(user);
 		
-		res.cookie("token", tokens.token, { httpOnly: true });
+		res.cookie("token", tokens.token, {
+			 httpOnly: true,
+  			
+			secure:true,
+			sameSite:"none" });
 		res.cookie("refreshToken", tokens.refreshToken, {
 			httpOnly: true,
 			path: "/api/auth/refreshToken",
+			secure:true,
+			sameSite:"none"
 		});
 		res.cookie("isAuthUser", true);
 		res.status(200).send(tokens);
