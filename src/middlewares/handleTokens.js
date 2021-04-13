@@ -28,7 +28,7 @@ const handleTokens = async (req, res, next) => {
 
 const redirect = async (req, res, next) => {
   try {
-    res.redirect(`${process.env.FE_URL}/main`);
+    res.redirect(`${process.env.FE_URL}main`);
   } catch (err) {
     console.log("Handle tokens error", error);
     next(error);
