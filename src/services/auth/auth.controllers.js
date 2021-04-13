@@ -38,6 +38,7 @@ exports.logout = async (req, res, next) => {
 exports.login = async (req, res, next) => {
 	try {
 		const { username, password } = req.body;
+		console.log(req.cookies)
 		const user = await UserModel.findByCredentials(username, password);
 		if (!user) {
 			return next(new ApiError(400, "Invalid Credentials"));
@@ -45,7 +46,7 @@ exports.login = async (req, res, next) => {
 		const tokens = await generateTokens(user);
 		
 		res.cookie("token", tokens.token, {
-			path:'/',
+			path:'/main',
 			 httpOnly: true,
   			
 			secure:true,
