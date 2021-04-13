@@ -2,7 +2,7 @@ const whitelist = ['https://all-playlists-fe.herokuapp.com', process.env.CALLBAC
 const corsOptions = {
 	origin: (origin, callback) => {
 		console.log(`Òrigin is` + origin)
-		if (whitelist.indexOf(origin) !== -1) {
+		if (whitelist.indexOf(origin) !== -1 || !origin) {
 			console.log("allowed")
 			callback(null, true);
 		
