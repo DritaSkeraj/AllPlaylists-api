@@ -3,6 +3,7 @@ const ApiError = require("../../utils/errors/ApiError");
 
 exports.getUserProfile = async (req, res, next) => {
 	try {
+		console.log('cookies', req.cookies)
 		res.status(200).send(req.user);
 	} catch (error) {
 		console.log("user get profile error: ", error);
