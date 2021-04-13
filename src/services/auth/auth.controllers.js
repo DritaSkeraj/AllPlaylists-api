@@ -53,11 +53,16 @@ exports.login = async (req, res, next) => {
 			sameSite:"none" });
 		res.cookie("refreshToken", tokens.refreshToken, {
 			path:'/',
-			httpOnly: true,
+			 httpOnly: true,
+  			
 			secure:true,
-			sameSite:"none"
-		});
-		res.cookie("isAuthUser", true);
+			sameSite:"none" });
+		res.cookie("isAuthUser", true, {
+			path:'/',
+			 httpOnly: true,
+  			
+			secure:true,
+			sameSite:"none" });
 		res.status(200).send(tokens);
 		}
 	} catch (error) {
