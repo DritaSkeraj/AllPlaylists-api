@@ -40,6 +40,7 @@ exports.login = async (req, res, next) => {
 		const { username, password } = req.body;
 		console.log(req.cookies)
 		const user = await UserModel.findByCredentials(username, password);
+		console.log("what kind of user are you getting? ", user);
 		if (!user) {
 			return next(new ApiError(400, "Invalid Credentials"));
 		} else{
