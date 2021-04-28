@@ -12,6 +12,7 @@ const corsOptions = {
 		}
 	},
 	credentials: true, //Allow cookie
+	exposedHeaders: ["set-cookie"]
 };
 
 module.exports = corsOptions;
